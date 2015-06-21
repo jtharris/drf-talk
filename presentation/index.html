@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>Django Rest Framework for Fun and Profit</title>
+
+		<meta name="description" content="A brief overview for writing RESTful APIs with Django">
+		<meta name="author" content="Justin Harris">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+		<link rel="stylesheet" href="reveal/css/reveal.css">
+		<link rel="stylesheet" href="reveal/css/theme/league.css" id="theme">
+
+		<!-- Code syntax highlighting -->
+		<link rel="stylesheet" href="reveal/lib/css/zenburn.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'reveal/css/print/pdf.css' : 'reveal/css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<div class="slides">
+				<section>
+          <img src="img/drf-logo.png" alt="Django REST Framework" style="background: white;" />
+					<h2>for Fun and Profit</h2>
+					<p>
+            <small>by <a href="mailto:justin.t.harris@gmail.com">Justin Harris</a></small>
+					</p>
+				</section>
+
+        <section data-markdown data-separator-notes="^Note:">
+          <script type="text/template">
+            ## Background
+
+            * Developer for 12 years
+            * In Austin for 3.5 years
+            * Java, Ruby, Javascript, and of couse Python
+            * Currently at [WP Engine](http://wpengine.com) focusing on microservices
+
+            Note:
+            WP Engine does a lot more than just PHP.  We are doing a lot more Python work, so talk to us if you are interested.
+          </script>
+        </section>
+
+        <section>
+          <h2>Assumptions</h2>
+
+          <ul>
+            <li>Familar w/ Python</li>
+            <li>Know a little bit about Django</li>
+            <li>Know what REST is</li>
+          </ul>
+
+          <div>
+            <img src="img/python-django.gif" alt="Python - Django" height="140" />
+            <img src="img/rest.png" alt="REST" height="140" />
+          </div>
+
+          <p>Please as questions if anything is unfamiliar or unclear.</p>
+        </section>
+
+        <section>
+          <h2>What is Django REST Framework?</h2>
+
+          <blockquote cite="http://www.django-rest-framework.org/">
+            "Django REST framework is a powerful and flexible toolkit that makes it easy to build Web APIs."
+          </blockquote>
+
+          <p>What does this really mean?</p>
+
+          <aside class="notes">Directly from the homepage.</aside>
+        </section>
+
+        <section>
+          <svg viewBox = "0 0 1000 1000" version = "1.1">
+            <rect x="250" y="50" rx="40" ry="40" width="500" height="100" fill="#44B78B" opacity="0.75" stroke="black" stroke-width="4" />
+            <rect x="250" y="200" rx="40" ry="40" width="500" height="100" fill="#A30000" opacity="0.75" stroke="black" stroke-width="4" />
+            <rect x="250" y="350" rx="40" ry="40" width="500" height="100" fill="#A30000" opacity="0.75" stroke="black" stroke-width="4" />
+            <rect x="250" y="500" rx="40" ry="40" width="500" height="100" fill="#44B78B" opacity="0.75" stroke="black" stroke-width="4" />
+
+            <text x="440" y="110">Routing</text>
+            <text x="455" y="260" fill="white">Views</text>
+            <text x="425" y="410" fill="white">Serializers</text>
+            <text x="300" y="560">Object Relational Mapper</text>
+          </svg>
+
+          <aside class="notes">
+            <p>
+            Green is pure Django, red is Django REST Framework.
+            </p>
+            <p>
+              Serializers are sort of like templates, but for json/xml/yaml - also includes validation.
+            </p>
+          </aside>
+        </section>
+
+        <!-- Add further explanation here?? -->
+
+			</div>
+
+		</div>
+
+		<script src="reveal/lib/js/head.min.js"></script>
+		<script src="reveal/js/reveal.js"></script>
+
+		<script>
+			// Full list of configuration options available at:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+
+				transition: 'slide', // none/fade/slide/convex/concave/zoom
+
+				// Optional reveal.js plugins
+				dependencies: [
+					{ src: 'reveal/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'reveal/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'reveal/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'reveal/plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'reveal/plugin/zoom-js/zoom.js', async: true },
+					{ src: 'reveal/plugin/notes/notes.js', async: true }
+				]
+			});
+
+		</script>
+
+	</body>
+</html>
