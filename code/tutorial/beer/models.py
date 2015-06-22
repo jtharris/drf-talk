@@ -17,3 +17,6 @@ class Beer(models.Model):
     name = models.CharField(max_length=100)
     abv = models.DecimalField(max_digits=4, decimal_places=2)
     style = models.CharField(max_length=50, choices=STYLES)
+
+    def __str__(self):
+        return self.name
