@@ -1,3 +1,5 @@
+import textwrap
+from django.core.mail import send_mail
 from rest_framework import viewsets, generics, response, status
 from beer.models import Beer
 from beer.serializers import BeerSerializer, OrderSerializer
@@ -14,11 +16,11 @@ class OrderView(generics.CreateAPIView):
     serializer_class = OrderSerializer
 
     def perform_create(self, serializer):
-        print('Creating a new order')
-        print(serializer.validated_data)
+        beer_message = textwrap.dedent("""\
+            Enjoy your beer!
 
-        # TODO:  Add the specific beer and quantity.
-        beer_message = 'Enjoy your beer!'
+            Beer Type:  {beer}
+            Quantity:   {quantity}""").format(**serializer.validated_data)
 
         send_mail(
             subject='Beer Delivery',
