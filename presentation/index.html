@@ -92,6 +92,8 @@
 
         <section data-markdown>
           <script type="text/template">
+          ## Some of the things
+
           * Serializers
           * Content negotiation
           * Validation
@@ -102,6 +104,10 @@
           * Throttling
           * Versioning
           </script>
+
+          <aside class="notes">
+            Not going to go into all of these in great detail, but this is an overview of most of what is provided.
+          </aside>
         </section>
 
         <section>
@@ -147,6 +153,7 @@
             <code>
               GET    /beers/   # Get a list of beers
               POST   /beers/   # Create a new beer entry
+              GET    /beers/5  # Get a single beer entry
               PUT    /beers/5  # Update a beer entry
               PATCH  /beers/5  # Partially update a beer entry
               DELETE /beers/5  # Delete a beer entry
@@ -158,8 +165,8 @@
 
         <section>
           <h2>Beer Model</h2>
-          <pre>
-            <code class="python" data-trim>
+          <section>
+            <pre><code class="python" data-trim>
 from django.db import models
 
 class Beer(models.Model):
@@ -176,36 +183,51 @@ class Beer(models.Model):
 
     def __str__(self):
         return self.name
-            </code>
-          </pre>
+            </code></pre>
+            <aside class="notes">
+              Vanilla Django model - nothing specific to Django Rest Framework.
+              Make migrations with ./manage.py makemigrations the same way.
 
-          <aside class="notes">
-            Vanilla Django model - nothing specific to Django Rest Framework.
-            Make migrations with ./manage.py makemigrations the same way
-          </aside>
+              Move down to show generated schema.
+            </aside>
+          </section>
+          <section>
+            <pre><code>.schema beer_beer</code></pre>
+            <pre><code>
+CREATE TABLE "beer_beer" (
+  "id" integer NOT NULL PRIMARY KEY AUTOINCREMENT,
+  "name" varchar(100) NOT NULL,
+  "abv" decimal NOT NULL,
+  "style" varchar(50) NOT NULL
+);
+            </code></pre>
+          </section>
         </section>
 
         <section>
           <h2>Beer Serializer</h2>
-          <pre>
-            <code class="python" data-trim>
+          <section>
+          <pre><code class="python" data-trim>
 from rest_framework import serializers
 
 class BeerSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Beer
-            </code>
-          </pre>
-          <p>
-            Creates a serializer field for each of the model's fields.
-          </p>
-        </section>
+            </code></pre>
+            <p>
+              Creates a serializer field for each of the model's fields.
+            </p>
+            <aside class="notes">
+              Note the inheritance - we are subclassing from HyperlinkedModelSerializer.
+              This uses urls instead of plain IDs.
 
-        <section>
-          <h2>The same Beer Serializer</h2>
-          <pre>
-            <code class="python" data-trim>
+              Move down to show the equivalent.
+            </aside>
+          </section>
+
+          <section>
+            <pre><code class="python" data-trim>
 from rest_framework import serializers
 
 class BeerSerializer(serializers.Serializer):
@@ -213,9 +235,110 @@ class BeerSerializer(serializers.Serializer):
     name = CharField(max_length=100)
     abv = DecimalField(decimal_places=2, max_digits=4)
     style = ChoiceField(choices=Beer.STYLES)
-            </code>
-          </pre>
+            </code></pre>
+
+          </section>
+          <aside class="notes">
+            This is the exact equivalent.  Let's see how it is used.
+          </aside>
         </section>
+
+        <section>
+          <h2>Serializer Validation</h2>
+          <pre><code>
+s = BeerSerializer(data={
+  'name': 'Pabst Blue Ribbon',
+  'style': 'AMAZING'
+})
+
+s.is_valid()
+False
+
+s.errors
+{
+  'style': ['"AMAZING" is not a valid choice.'],
+  'abv': ['This field is required.']
+}
+          </code></pre>
+          <p>
+            Also handles converting model instances into serializable data (lists, dicts, etc.)
+          </p>
+        </section>
+
+        <section>
+          <h2>View Sets</h2>
+          <section>
+            <pre><code class="python">
+from rest_framework import viewsets
+
+class BeerViewSet(viewsets.ModelViewSet):
+
+    queryset = Beer.objects.all()
+    serializer_class = BeerSerializer
+            </code></pre>
+
+            <aside class="notes">
+              This includes a lot of stock CRUD operations out of the box.
+
+              (Move down)
+            </aside>
+          </section>
+          <section>
+            <pre><code class="python">
+def list(self, request):
+
+def create(self, request):
+
+def retrieve(self, request, pk=None):
+
+def update(self, request, pk=None):
+
+def partial_update(self, request, pk=None):
+
+def destroy(self, request, pk=None):
+            </code></pre>
+            <aside class="notes">
+              If anyone has done Rails work this is very close to a Rails controller
+              in terms of HTTP verb/url to method mapping.
+            </aside>
+          </section>
+        </section>
+
+        <section>
+          <h2>URL Routing</h2>
+          <section>
+            <pre><code class="python">
+from rest_framework.routers import DefaultRouter
+
+router = DefaultRouter()
+router.register('beers', BeerViewSet)
+
+urlpatterns = router.urls
+            </code></pre>
+            <aside class="notes">
+              The router sets up the url patterns and routes requests to the correct method.
+            </aside>
+          </section>
+          <section>
+            <pre><code>
+              GET    /beers/   # list()
+              POST   /beers/   # create()
+              GET    /beers/5  # retrieve()
+              PUT    /beers/5  # update()
+              PATCH  /beers/5  # partial_updat()
+              DELETE /beers/5  # destroy()
+            </code></pre>
+          </section>
+
+        </section>
+
+        <section>
+          <h2>Putting it all together</h2>
+          <aside class="notes">
+            Demo time?  Show the beers endpoint - Browsable API.
+          </aside>
+        </section>
+
 
         <!-- Add further explanation here?? -->
 
