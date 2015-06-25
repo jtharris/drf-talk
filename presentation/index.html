@@ -334,13 +334,98 @@ urlpatterns = router.urls
 
         <section>
           <h2>Putting it all together</h2>
+          <p>Demo Time</p>
           <aside class="notes">
-            Demo time?  Show the beers endpoint - Browsable API.
+            Demo time.  Show the beers endpoint - Browsable API.
           </aside>
         </section>
 
+        <section>
+          <h2>Ordering a Beer</h2>
+          <section>
+            <pre><code class="python">
+class OrderSerializer(serializers.Serializer):
 
-        <!-- Add further explanation here?? -->
+    beer = serializers.HyperlinkedRelatedField(
+        view_name='beer-detail',
+        queryset=Beer.objects.all()
+    )
+    quantity = serializers.IntegerField(
+        min_value=1,
+        max_value=12
+    )
+    email = serializers.EmailField()
+            </code></pre>
+            <aside class="notes">
+              Go over the HyperlinkRelatedField - similar to PrimaryKeyRelatedField or SlugRelatedField, which
+              looks up the referenced object by (pk, slug, link, etc.)
+
+              Also note this is NOT a ModelSerializer - no backing in the DB.
+
+              Move down for the view.
+            </aside>
+          </section>
+          <section>
+            <pre><code class="python">
+class OrderView(generics.CreateAPIView):
+    serializer_class = OrderSerializer
+
+    def perform_create(self, serializer):
+        send_mail(
+            subject='Beer Delivery',
+            from_email='api@beerdelivery.com',
+            recipient_list=[serializer.validated_data['email']],
+            message='Enjoy your beer!'
+        )
+
+        # TODO:  DEPLOY THE BEER DRONES FOR DELIVERY
+            </code></pre>
+            <aside class="notes">
+              perform_create actually does whatever "create" means - default version is to call save on the serializer - which persists a ModelSerializer.
+              We are sending an email instead.
+            </aside>
+
+          </section>
+
+          <section>
+            <pre><code class="python">
+router = DefaultRouter()
+router.register('beers', BeerViewSet)
+
+urlpatterns = [
+    url(r'^', include(router.urls)),
+    url(r'^orders/', OrderView.as_view())
+]
+            </code></pre>
+            <aside class="notes">
+              Remember the router from before?  That only works with ViewSets.  Here is how you can mix Views and ViewSets.
+            </aside>
+
+          </section>
+        </section>
+
+        <section data-markdown>
+          <script type="text/template">
+            ## Gotchas
+
+            * Deep Class Hierarchy plus Mixins (Views, ViewSets, Serializers)
+            * Model <-> Serializer over-coupling at times
+            * Structural and Data validation mixed
+            * Validation customization can be a huge pain
+            * Too much magic?
+          </script>
+        </section>
+
+        <section data-markdown>
+          <script type="text/template">
+            ## Thanks!
+
+            https://github.com/jtharris/drf-talk
+
+            Questions?
+
+          </script>
+        </section>
 
 			</div>
 
