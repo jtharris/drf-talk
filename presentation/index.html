@@ -90,6 +90,20 @@
           <aside class="notes">Directly from the homepage.</aside>
         </section>
 
+        <section data-markdown>
+          <script type="text/template">
+          * Serializers
+          * Content negotiation
+          * Validation
+          * Class-based Views
+          * Viewsets
+          * Routers
+          * Browsable API
+          * Throttling
+          * Versioning
+          </script>
+        </section>
+
         <section>
           <svg viewBox = "0 0 1000 1000" version = "1.1">
             <rect x="250" y="50" rx="40" ry="40" width="500" height="100" fill="#44B78B" opacity="0.75" stroke="black" stroke-width="4" />
@@ -109,8 +123,98 @@
             </p>
             <p>
               Serializers are sort of like templates, but for json/xml/yaml - also includes validation.
+              Views and viewsets provide higher level abstractions around how to handle HTTP requests.
             </p>
           </aside>
+        </section>
+
+        <section>
+          <h1>Let's build an API</h1>
+
+          <p>Who likes beer?</p>
+        </section>
+
+        <section>
+          <h2>Beer API</h2>
+
+          <p>Create a beer catalog</p>
+          <p>Order some beer</p>
+        </section>
+
+        <section>
+          <h2>API Design</h2>
+          <pre>
+            <code>
+              GET    /beers/   # Get a list of beers
+              POST   /beers/   # Create a new beer entry
+              PUT    /beers/5  # Update a beer entry
+              PATCH  /beers/5  # Partially update a beer entry
+              DELETE /beers/5  # Delete a beer entry
+
+              POST   /orders/  # Create a new beer order
+            </code>
+          </pre>
+        </section>
+
+        <section>
+          <h2>Beer Model</h2>
+          <pre>
+            <code class="python" data-trim>
+from django.db import models
+
+class Beer(models.Model):
+    STYLES = (
+        ('IPA', 'India Pale Ale (IPA)'),
+        ('WHEAT', 'Wheat'),
+        ('BLONDE', 'Blonde Ale'),
+        ...
+    )
+
+    name = models.CharField(max_length=100)
+    abv = models.DecimalField(max_digits=4, decimal_places=2)
+    style = models.CharField(max_length=50, choices=STYLES)
+
+    def __str__(self):
+        return self.name
+            </code>
+          </pre>
+
+          <aside class="notes">
+            Vanilla Django model - nothing specific to Django Rest Framework.
+            Make migrations with ./manage.py makemigrations the same way
+          </aside>
+        </section>
+
+        <section>
+          <h2>Beer Serializer</h2>
+          <pre>
+            <code class="python" data-trim>
+from rest_framework import serializers
+
+class BeerSerializer(serializers.HyperlinkedModelSerializer):
+
+    class Meta:
+        model = Beer
+            </code>
+          </pre>
+          <p>
+            Creates a serializer field for each of the model's fields.
+          </p>
+        </section>
+
+        <section>
+          <h2>The same Beer Serializer</h2>
+          <pre>
+            <code class="python" data-trim>
+from rest_framework import serializers
+
+class BeerSerializer(serializers.Serializer):
+    url = HyperlinkedIdentityField(view_name='beer-detail')
+    name = CharField(max_length=100)
+    abv = DecimalField(decimal_places=2, max_digits=4)
+    style = ChoiceField(choices=Beer.STYLES)
+            </code>
+          </pre>
         </section>
 
         <!-- Add further explanation here?? -->
